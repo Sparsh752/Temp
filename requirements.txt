@@ -1,0 +1,6 @@
+yt-dlp
+pydub
+firebase_admin
+pytube 
+flask
+flask_cors
