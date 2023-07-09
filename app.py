@@ -36,12 +36,14 @@ def convert():
     blob = bucket.blob(user+'/'+filename+'.mp3')
     blob.upload_from_filename(os.path.join(app.config['UPLOAD_FOLDER'],filename)+'.mp3')
     blob.make_public()
-    process=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     command=['ls']
+    process=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    print(process)
     os.remove(os.path.join(app.config['UPLOAD_FOLDER'],filename)+'.mp3')
     os.remove(os.path.join(app.config['UPLOAD_FOLDER'],filename)+'.m4a')
-    process=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     command=['ls']
+    process=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    print(process)
     return user+'/'+filename+'.mp3'
 @app.route("/", defaults={'path':''})
 def serve(path):
