@@ -10,7 +10,7 @@ CORS(app)
 cred = credentials.Certificate("./firebase_key.json")
 initialize_app(cred, {'storageBucket': 'ethos-website-98c85.appspot.com'})
 bucket = storage.bucket()
-
+print('hello')
 @app.after_request
 def add_cors_headers(response):
     response.headers['Access-Control-Allow-Origin'] = '*'
