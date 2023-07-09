@@ -26,6 +26,9 @@ def convert():
     output_path = filename+'.%(ext)s'
     command=['yt-dlp', '--extract-audio','--format','m4a', url, '-o', output_path]
     process=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    command=['ls']
+    process=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    print(process)
     audio = AudioSegment.from_file(filename+'.m4a', format='m4a')
     audio.export(filename+'.mp3', format='mp3')
     blob = bucket.blob(user+'/'+filename+'.mp3')
@@ -36,8 +39,7 @@ def convert():
     return user+'/'+filename+'.mp3'
 @app.route("/", defaults={'path':''})
 def serve(path):
-    return 'Hello2'
-    # print('Hello2')
-    # return send_from_directory(app.static_folder,'index.html')
+    print('Hello2')
+    return send_from_directory(app.static_folder,'index.html')
 if __name__ == '__main__':
     app.run()
