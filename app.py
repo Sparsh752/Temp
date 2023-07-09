@@ -25,18 +25,19 @@ def convert():
     user = request.args.get('userid')
     filename=str(datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
     output_path = filename+'.%(ext)s'
-    command=['yt-dlp', '--extract-audio','--format','m4a', url, '-o', os.path.join(app.config['UPLOAD_FOLDER'], "/"+output_path)]
+    command=['yt-dlp', '--extract-audio','--format','m4a', url, '-o', os.path.join(app.config['UPLOAD_FOLDER'],output_path)]
+    print(os.path.join(app.config['UPLOAD_FOLDER'],output_path))
     process=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     command=['ls']
     process=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     print(process)
-    audio = AudioSegment.from_file(os.path.join(app.config['UPLOAD_FOLDER'], "/"+filename)+'.m4a', format='m4a')
-    audio.export(os.path.join(app.config['UPLOAD_FOLDER'], "/"+filename)+'.mp3', format='mp3')
+    audio = AudioSegment.from_file(os.path.join(app.config['UPLOAD_FOLDER'],filename)+'.m4a', format='m4a')
+    audio.export(os.path.join(app.config['UPLOAD_FOLDER'], filename)+'.mp3', format='mp3')
     blob = bucket.blob(user+'/'+filename+'.mp3')
-    blob.upload_from_filename(os.path.join(app.config['UPLOAD_FOLDER'], "/"+filename)+'.mp3')
+    blob.upload_from_filename(os.path.join(app.config['UPLOAD_FOLDER'],filename)+'.mp3')
     blob.make_public()
-    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], "/"+filename)+'.mp3')
-    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], "/"+filename)+'.m4a')
+    os.remove(os.path.join(app.config['UPLOAD_FOLDER'],filename)+'.mp3')
+    os.remove(os.path.join(app.config['UPLOAD_FOLDER'],filename)+'.m4a')
     return user+'/'+filename+'.mp3'
 @app.route("/", defaults={'path':''})
 def serve(path):
