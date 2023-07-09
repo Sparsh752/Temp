@@ -4,3 +4,5 @@ firebase_admin
 pytube 
 flask
 flask_cors
+gunicorn
+pipenv
