@@ -36,6 +36,8 @@ def convert():
     return user+'/'+filename+'.mp3'
 @app.route("/", defaults={'path':''})
 def serve(path):
-    return send_from_directory(app.static_folder,'index.html')
+    return 'Hello2'
+    # print('Hello2')
+    # return send_from_directory(app.static_folder,'index.html')
 if __name__ == '__main__':
     app.run()
