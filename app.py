@@ -16,30 +16,30 @@ def add_cors_headers(response):
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
+UPLOAD_FOLDER = os.path.abspath(os.path.dirname(__file__))
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route("/convert")
 def convert():
-
     url = request.args.get('url')
     user = request.args.get('userid')
     filename=str(datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
     output_path = filename+'.%(ext)s'
-    command=['yt-dlp', '--extract-audio','--format','m4a', url, '-o', output_path]
+    command=['yt-dlp', '--extract-audio','--format','m4a', url, '-o', os.path.join(app.config['UPLOAD_FOLDER'], "/"+output_path)]
     process=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     command=['ls']
     process=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     print(process)
-    audio = AudioSegment.from_file(filename+'.m4a', format='m4a')
-    audio.export(filename+'.mp3', format='mp3')
+    audio = AudioSegment.from_file(os.path.join(app.config['UPLOAD_FOLDER'], "/"+filename)+'.m4a', format='m4a')
+    audio.export(os.path.join(app.config['UPLOAD_FOLDER'], "/"+filename)+'.mp3', format='mp3')
     blob = bucket.blob(user+'/'+filename+'.mp3')
-    blob.upload_from_filename(filename+'.mp3')
+    blob.upload_from_filename(os.path.join(app.config['UPLOAD_FOLDER'], "/"+filename)+'.mp3')
     blob.make_public()
-    os.remove(filename+'.mp3')
-    os.remove(filename+'.m4a')
+    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], "/"+filename)+'.mp3')
+    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], "/"+filename)+'.m4a')
     return user+'/'+filename+'.mp3'
 @app.route("/", defaults={'path':''})
 def serve(path):
-    print('Hello2')
     return send_from_directory(app.static_folder,'index.html')
 if __name__ == '__main__':
     app.run()
